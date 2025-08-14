@@ -19,19 +19,20 @@ async function showConfirm(message) {
     const no = document.getElementById('confirmNoBtn');
 
     msg.textContent = message;
-    modal.style.display = 'flex';
+    modal.style.display = 'flex'; // show the modal centered
 
     yes.onclick = () => {
-      modal.style.display = 'none';
+      modal.style.display = 'none'; // hide after click
       resolve(true);
     };
 
     no.onclick = () => {
-      modal.style.display = 'none';
+      modal.style.display = 'none'; // hide after click
       resolve(false);
     };
   });
 }
+
 
 window.moduleInit = async () => {
   const input = document.getElementById('searchCustomer');
@@ -41,7 +42,6 @@ window.moduleInit = async () => {
   const editAddress = document.getElementById('editAddress');
   const saveEditBtn = document.getElementById('saveEditBtn');
   const closeModalBtn = document.getElementById('closeModalBtn');
-  const deleteCustomerBtn = document.getElementById('deleteCustomerBtn');
 
   let currentCustomer = null;
 
@@ -57,7 +57,7 @@ window.moduleInit = async () => {
   function showModal(customer) {
     currentCustomer = customer;
     populateEditModal(customer);
-    modal.style.display = 'block';
+    modal.style.display = 'flex';
   }
 
   function closeModal() {
@@ -66,43 +66,47 @@ window.moduleInit = async () => {
   }
 
   async function render() {
-    const query = input.value.toLowerCase();
-    const customers = await window.customerAPI.getCustomers();
-    const filtered = customers.filter(c => c.name.toLowerCase().includes(query));
+  const query = input.value.toLowerCase();
+  const customers = await window.customerAPI.getCustomers();
+  const filtered = customers.filter(c => c.name.toLowerCase().includes(query));
 
-    results.innerHTML = '';
+  results.innerHTML = ''; // results is the <tbody>
 
-    filtered.forEach(c => {
-      const div = document.createElement('div');
-      div.className = 'entry';
-      div.innerHTML = `
-        <strong>${c.name}</strong><br>
-        <div>🏢 Bill To: ${c.address}</div>
-        <div>🚚 Ship To:
-          <ul>${(Array.isArray(c.shipTos) ? c.shipTos : []).map(addr => `<li>${addr}</li>`).join('')}</ul>
-        </div>
-        <div style="margin-top: 10px; display: flex; gap: 10px;">
-          <button onclick="window.editCustomer('${c.name}')">✏️ Edit</button>
-          <button class="delete-btn" data-name="${c.name}" style="background: #dc3545; color: white;">🗑️ Delete</button>
-        </div>
-      `;
-      results.appendChild(div);
+  filtered.forEach(c => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${c.name}</td>
+      <td>${c.address || ''}</td>
+      <td style="text-align:center;">
+        ${(Array.isArray(c.shipTos) ? c.shipTos.length : 0)}
+      </td>
+      <td class="customer-actions">
+        <button class="edit-btn" data-name="${c.name}">✏️ Edit</button>
+        <button class="delete-btn" data-name="${c.name}">🗑️ Delete</button>
+      </td>
+    `;
+    results.appendChild(tr);
+  });
 
-      div.querySelector('.delete-btn').onclick = async () => {
-        const confirmed = await showConfirm(`Are you sure you want to delete ${c.name}?`);
-        if (confirmed) {
-          await window.customerAPI.deleteCustomer(c.name);
-          render();
-        }
-      };
-    });
-
-    // ✅ Now placed outside loop
-    window.editCustomer = name => {
-      const customer = filtered.find(c => c.name === name);
+  // event bindings
+  results.querySelectorAll('.edit-btn').forEach(btn => {
+    btn.onclick = () => {
+      const customer = filtered.find(c => c.name === btn.dataset.name);
       if (customer) showModal(customer);
     };
-  }
+  });
+
+  results.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.onclick = async () => {
+      const confirmed = await showConfirm(`Are you sure you want to delete ${btn.dataset.name}?`);
+      if (confirmed) {
+        await window.customerAPI.deleteCustomer(btn.dataset.name);
+        render();
+      }
+    };
+  });
+}
+
 
   saveEditBtn.onclick = async () => {
     if (!currentCustomer) return;
@@ -116,17 +120,6 @@ window.moduleInit = async () => {
     };
 
     await window.customerAPI.editCustomer(currentCustomer.name, updated);
-    closeModal();
-    render();
-  };
-
-  deleteCustomerBtn.onclick = async () => {
-    if (!currentCustomer) return;
-
-    const confirmed = await showConfirm(`Are you sure you want to delete ${currentCustomer.name}?`);
-    if (!confirmed) return;
-
-    await window.customerAPI.deleteCustomer(currentCustomer.name);
     closeModal();
     render();
   };

@@ -7,6 +7,10 @@ const PackingSlipSchema = new mongoose.Schema({
   date: String,
   invoice: String,
   items: [Object],
+  void: {
+    type: Boolean,
+    default: false
+  },
   createdAt: {
     type: Date,
     default: Date.now,

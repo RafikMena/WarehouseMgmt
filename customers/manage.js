@@ -6,13 +6,24 @@ window.moduleInit = async () => {
   const shipToContainer = document.getElementById('shipToInputs');
   const addShipToBtn = document.getElementById('addShipToBtn');
 
+
+  const clearBtn = document.getElementById('clearFormBtn') || document.querySelector('.btn-grey[type="reset"]');
+
+    clearBtn.onclick = () => {
+      nameInput.value = '';
+      addressInput.value = '';
+      shipToContainer.innerHTML = '';
+      addShipToField(); // re-add empty Ship To
+      addStatus.innerHTML = '';
+      restoreFocusAfterPrompt(nameInput);
+    };
+
   function addShipToField(value = '') {
     const input = document.createElement('input');
     input.type = 'text';
-    input.className = 'shipToField';
+    input.className = 'shipToField qb-input';
     input.value = value;
     input.placeholder = 'Ship To Address';
-    input.style = 'width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 6px;';
     shipToContainer.appendChild(input);
   }
 
@@ -28,10 +39,9 @@ addBtn.onclick = async () => {
   const name = nameInput.value.trim();
   const address = addressInput.value.trim();
 
-  // Safely extract string values only
   const shipTos = Array.from(document.querySelectorAll('.shipToField'))
-    .map(el => typeof el.value === 'string' ? el.value.trim() : '')
-    .filter(Boolean); // remove empty
+    .map(el => (typeof el.value === 'string' ? el.value.trim() : ''))
+    .filter(Boolean);
 
   if (!name || !address) {
     addStatus.innerHTML = `<span style="color:red;">⚠️ Please fill all fields.</span>`;
@@ -39,15 +49,23 @@ addBtn.onclick = async () => {
     return;
   }
 
-  const safePayload = JSON.parse(JSON.stringify({ name, address, shipTos }));
+  const safePayload = { name, address, shipTos };
 
   try {
     await window.customerAPI.addCustomer(safePayload);
     addStatus.innerHTML = `<span style="color:green;">✅ Customer added.</span>`;
+
+    // ✅ Reset form
     nameInput.value = '';
     addressInput.value = '';
     shipToContainer.innerHTML = '';
+    addShipToField(); // re-add empty Ship To
+
     restoreFocusAfterPrompt(nameInput);
+
+    // Optional: clear status after a short delay
+    setTimeout(() => { addStatus.innerHTML = ''; }, 2000);
+
   } catch (err) {
     console.error('❌ Failed to add customer:', err);
     addStatus.innerHTML = `<span style="color:red;">Error adding customer.</span>`;
@@ -55,5 +73,6 @@ addBtn.onclick = async () => {
 };
 
 
-  addShipToField(); // Auto-add first field
+  // Auto-add first Ship To field
+  addShipToField();
 };
