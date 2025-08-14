@@ -2,6 +2,9 @@ let allItems = [];
 let currentEditItem = null;
 let currentDeleteCode = null;
 
+// Round UP to the nearest hundredth
+const ceil2 = (n) => Math.ceil(n * 100) / 100;
+
 function openEditModal(code) {
   currentEditItem = code;
   const item = allItems.find(i => i.itemCode === code);
@@ -9,18 +12,22 @@ function openEditModal(code) {
 
   document.getElementById('editCode').value = item.itemCode;
   document.getElementById('editPacking').value = item.packing;
-  document.getElementById('editYards').value = item.yards;
+
+  // Always show two decimals in the input
+  const y = Number(item.yards);
+  document.getElementById('editYards').value = Number.isFinite(y) ? y.toFixed(2) : '';
   document.getElementById('editModal').style.display = 'flex';
 }
 
 function saveEdit() {
   const packing = parseInt(document.getElementById('editPacking').value);
-  const yards = parseFloat(document.getElementById('editYards').value);
+  const rawYards = parseFloat(document.getElementById('editYards').value);
+  const yards = Number.isFinite(rawYards) ? ceil2(rawYards) : NaN;
 
   const item = allItems.find(i => i.itemCode === currentEditItem);
   if (item) {
     item.packing = packing;
-    item.yards = yards;
+    item.yards = yards; // store as number, rounded up
   }
 
   window.api.saveInventory(allItems).then(() => {
@@ -50,7 +57,7 @@ function closeModal() {
 
 window.moduleInit = async () => {
   const searchInput = document.getElementById('search');
-const inventoryContainer = document.getElementById('inventory') || document.getElementById('inventoryTable').parentElement;
+  const inventoryContainer = document.getElementById('inventory') || document.getElementById('inventoryTable').parentElement;
 
   if (!searchInput || !inventoryContainer) {
     console.warn('❌ Missing #search or #inventory elements in view.html');
@@ -76,11 +83,14 @@ function renderInventory(data) {
   tbody.innerHTML = '';
 
   data.forEach((item) => {
+    const y = Number(item.yards);
+    const yardsDisplay = Number(item.yards).toFixed(2);
+
     const row = document.createElement('tr');
     row.innerHTML = `
       <td>${item.itemCode}</td>
       <td>${item.packing}</td>
-      <td>${item.yards}</td>
+      <td>${yardsDisplay}</td>
       <td>
         <button class="edit-btn" data-code="${item.itemCode}" style="font-size:11px;padding:2px 6px;">✏️</button>
         <button class="delete-btn" data-code="${item.itemCode}" style="font-size:11px;padding:2px 6px;">🗑️</button>
@@ -108,10 +118,12 @@ function renderInventory(data) {
   }
 }
 
-
 function exportInventoryToCSV(inventory) {
   const headers = ['Item Code', 'Rolls', 'Yards'];
-  const rows = inventory.map(item => [item.itemCode, item.packing, item.yards]);
+  const rows = inventory.map(item => {
+    const y = Number(item.yards);
+    return [item.itemCode, item.packing, Number.isFinite(y) ? y.toFixed(2) : ''];
+  });
 
   const csvContent = [headers, ...rows]
     .map(row => row.join(','))
@@ -132,11 +144,16 @@ function exportInventoryToCSV(inventory) {
 }
 
 function exportInventoryToExcel(inventory) {
-  const worksheetData = inventory.map(item => ({
-    "Item Code": item.itemCode,
-    "Rolls": item.packing,
-    "Yards": item.yards
-  }));
+  const worksheetData = inventory.map(item => {
+    const y = Number(item.yards);
+    // Store as a number rounded to 2 decimals so Excel treats it as numeric
+    const yNum = Number.isFinite(y) ? Number(y.toFixed(2)) : '';
+    return {
+      "Item Code": item.itemCode,
+      "Rolls": item.packing,
+      "Yards": yNum
+    };
+  });
 
   const worksheet = XLSX.utils.json_to_sheet(worksheetData);
   const workbook = XLSX.utils.book_new();

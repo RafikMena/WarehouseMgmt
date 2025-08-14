@@ -10,6 +10,13 @@ const Item = require('./models/Item');
 const Customer = require('./models/Customer');
 const PackingSlip = require('./models/PackingSlip');
 
+//dsdsds
+// --- Hundredth helpers ---
+const ceil2int = (n) => Math.ceil(Number(n) * 100);   // user-entered delta -> integer hundredths (always up)
+const round2int = (n) => Math.round(Number(n) * 100);  // totals -> integer hundredths
+const int2num   = (i) => i / 100;                      // back to Number
+
+
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('✅ Connected to MongoDB'))
   .catch(err => console.error('❌ MongoDB Error:', err));
@@ -28,6 +35,7 @@ function createWindow() {
 
   win.loadFile('main.html');
   win.maximize();
+ 
 
   win.webContents.once('did-finish-load', () => {
     globalShortcut.register('Control+Shift+I', () => {
@@ -44,39 +52,54 @@ app.on('will-quit', () => globalShortcut.unregisterAll());
 // ==============================
 
 ipcMain.handle('get-rolls', async () => {
-  const items = await Item.find().lean(); // ✅ FIXED: Ensure cloneable
+  const items = await Item.find().lean();
   return items.map(i => ({
     itemCode: i.itemCode,
-    packing: i.packing,
-    yards: i.yards
+    packing: Number(i.packing) || 0,
+    yards: int2num(round2int(i.yards))
   }));
 });
 
 ipcMain.handle('add-roll', async (_, entry) => {
-  const { itemCode, packing, yards } = entry;
+  const { itemCode } = entry;
+  const packing = parseInt(entry.packing);
+  const addYardsInt = ceil2int(entry.yards); // ALWAYS up for user input
+
   const existing = await Item.findOne({ itemCode });
 
   if (existing) {
+    const curInt = round2int(existing.yards);
     existing.packing += packing;
-    existing.yards += yards;
+    existing.yards = int2num(curInt + addYardsInt);
     await existing.save();
   } else {
-    await new Item({ itemCode, packing, yards }).save();
+    await new Item({
+      itemCode,
+      packing,
+      yards: int2num(addYardsInt)
+    }).save();
   }
 
-  return await Item.find().lean(); // ✅ FIXED
+  const items = await Item.find().lean();
+  return items.map(i => ({ ...i, yards: int2num(round2int(i.yards)) }));
 });
+
 
 ipcMain.handle('delete-roll', async (_, { itemCode, yards }) => {
   const item = await Item.findOne({ itemCode });
   if (!item) return { status: 'not-found' };
 
-  item.packing -= 1;
-  item.yards -= Math.abs(parseFloat(yards));
-  await item.save();
+  const curInt   = round2int(item.yards);
+  const deltaInt = ceil2int(Math.abs(parseFloat(yards)));
 
+  const nextInt = Math.max(0, curInt - deltaInt);
+  item.packing = Math.max(0, (item.packing || 0) - 1);
+  item.yards = int2num(nextInt);
+
+  await item.save();
   return { status: 'updated', remaining: item.yards };
 });
+
 
 ipcMain.handle('delete-item-completely', async (_, itemCode) => {
   await Item.deleteMany({ itemCode, yards: 0 });
@@ -84,18 +107,25 @@ ipcMain.handle('delete-item-completely', async (_, itemCode) => {
 });
 
 ipcMain.handle('get-inventory', async () => {
-  return await Item.find().lean(); // ✅ FIXED
+  const items = await Item.find().lean();
+  return items.map(i => ({
+    ...i,
+    packing: Number(i.packing) || 0,
+    yards: int2num(round2int(i.yards))
+  }));
 });
 
 ipcMain.handle('save-inventory', async (_, items) => {
   await Item.deleteMany({});
-  await Item.insertMany(items.map(i => ({
+  const plain = items.map(i => ({
     itemCode: i.itemCode,
-    packing: i.packing,
-    yards: i.yards
-  }))); // ✅ Make sure only raw objects are inserted
+    packing: parseInt(i.packing) || 0,
+    yards: int2num(round2int(i.yards))
+  }));
+  await Item.insertMany(plain);
   return true;
 });
+
 
 // ==============================
 // 👤 CUSTOMERS

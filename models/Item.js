@@ -2,9 +2,14 @@
 const mongoose = require('mongoose');
 
 const ItemSchema = new mongoose.Schema({
-  itemCode: { type: String, required: true },
-  packing: { type: Number, required: true },
-  yards: { type: Number, required: true },
+  itemCode: { type: String, required: true, index: true },
+  packing:  { type: Number, default: 0 },
+  yards:    { 
+    type: Number, 
+    default: 0,
+    set: v => Math.round(Number(v) * 100) / 100  // normalize on write
+  }
 });
+
 
 module.exports = mongoose.model('Item', ItemSchema);
