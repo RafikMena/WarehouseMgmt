@@ -1,0 +1,79 @@
+<div class="section-header">
+  <h2>🛠️ Add New Customer</h2>
+</div>
+
+<div class="form-container">
+  <label>Customer Name</label>
+  <input type="text" id="newCustomer" placeholder="e.g. Acme Corp" />
+
+  <label>Bill To Address</label>
+  <textarea id="newAddress" rows="3" placeholder="Street, City, Zip"></textarea>
+
+  <label>Ship To Addresses</label>
+  <div id="shipToInputs" class="shipto-group"></div>
+  <button type="button" id="addShipToBtn" class="secondary-btn">➕ Add Ship To</button>
+
+  <button id="addCustomerBtn" class="primary-btn">Add Customer</button>
+  <div id="addStatus" class="status-msg"></div>
+</div>
+
+<style>
+  .form-container {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  input, textarea {
+    width: 100%;
+    padding: 12px;
+    margin-top: 6px;
+    margin-bottom: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    box-sizing: border-box;
+  }
+
+  label {
+    font-weight: 600;
+    color: #333;
+  }
+
+  .primary-btn, .secondary-btn {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin-bottom: 12px;
+  }
+
+  .primary-btn {
+    background-color: #1e90ff;
+    color: white;
+  }
+
+  .primary-btn:hover {
+    background-color: #157dd4;
+  }
+
+  .secondary-btn {
+    background-color: #eee;
+    color: #333;
+  }
+
+  .secondary-btn:hover {
+    background-color: #ddd;
+  }
+
+  .status-msg {
+    font-weight: 500;
+    margin-top: 10px;
+  }
+
+  .shipto-group input {
+    margin-bottom: 10px;
+  }
+</style>

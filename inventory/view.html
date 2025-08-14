@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Inventory List</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <style>
+    body {
+      font-family: Tahoma, sans-serif;
+      background-color: #e5e5e5;
+      margin: 20px;
+      color: #000;
+    }
+
+    .window {
+      width: 900px;
+      border: 2px solid #888;
+      background: #fff;
+      box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .window-header {
+      background: linear-gradient(#d6e0f0, #b7cbe6);
+      padding: 6px 10px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #000;
+      border-bottom: 1px solid #888;
+    }
+
+    .toolbar {
+      display: flex;
+      padding: 4px 8px;
+      background-color: #f0f0f0;
+      border-bottom: 1px solid #888;
+      gap: 4px;
+    }
+
+    .toolbar button, .toolbar label {
+      font-family: Tahoma, sans-serif;
+      font-size: 13px;
+      padding: 2px 6px;
+      border: 1px solid #888;
+      background: linear-gradient(#fff, #ddd);
+      cursor: pointer;
+    }
+
+    .toolbar input[type="checkbox"] {
+      transform: scale(1.1);
+      margin-left: 8px;
+    }
+
+    .search-bar {
+      padding: 8px 12px;
+      background: #f5f5f5;
+      border-bottom: 1px solid #aaa;
+    }
+
+    .search-bar input {
+      width: 250px;
+      padding: 5px;
+      font-size: 13px;
+      border: 1px solid #888;
+    }
+
+    .table-container {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th, td {
+      border: 1px solid #888;
+      padding: 4px 6px;
+      text-align: left;
+    }
+
+    th {
+      background: #dbe5f1;
+      font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f7f7f7;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.3);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: #f8f8f8;
+      border: 2px solid #999;
+      padding: 20px;
+      width: 300px;
+      font-size: 13px;
+    }
+
+    .modal-content h3 {
+      font-size: 15px;
+      margin-top: 0;
+      color: #003366;
+    }
+
+    .modal-content input {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 6px;
+      font-size: 13px;
+      border: 1px solid #888;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .modal-actions button {
+      background: linear-gradient(#f0f0f0, #dcdcdc);
+      border: 1px solid #888;
+      padding: 4px 10px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .modal-actions button:hover {
+      background: linear-gradient(#e0e0e0, #c0c0c0);
+    }
+  </style>
+</head>
+<body>
+
+<div class="window">
+  <div class="window-header">Inventory List</div>
+
+  <div class="toolbar">
+    <button onclick="alert('Export Excel')">Export</button>
+  </div>
+
+  <div class="search-bar">
+    <input type="text" id="search" placeholder="Search by Item Code..." />
+  </div>
+
+<div id="inventory">
+  <div class="table-container">
+    <table id="inventoryTable">
+<thead>
+  <tr>
+    <th>Code</th>
+    <th>Packing</th>
+    <th>Yards</th>
+    <th>Actions</th>
+  </tr>
+</thead>
+
+      <tbody id="inventoryBody">
+        <!-- Dynamically injected rows from JS -->
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- Edit Modal -->
+<div id="editModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h3>Edit Item</h3>
+    <input id="editCode" readonly />
+    <input id="editPacking" type="number" placeholder="Packing" />
+    <input id="editYards" type="number" placeholder="Yards" />
+    <div class="modal-actions">
+      <button onclick="saveEdit()">✅ Save</button>
+      <button onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Modal -->
+<div id="deleteModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h3>Delete Item</h3>
+    <p id="deleteText"></p>
+    <div class="modal-actions">
+      <button onclick="confirmDelete()">🗑️ Delete</button>
+      <button onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Example row injection, replace with your own logic
+  const items = [
+    { code: 'ROLL-A', description: 'Roll of Fabric A', packing: 10, yards: 200 },
+    { code: 'ROLL-B', description: 'Roll of Fabric B', packing: 8, yards: 180 },
+  ];
+
+  const tbody = document.getElementById('inventoryBody');
+  for (const item of items) {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${item.code}</td>
+      <td>${item.description}</td>
+      <td>${item.packing}</td>
+      <td>${item.yards}</td>
+    `;
+    tbody.appendChild(row);
+  }
+
+  function saveEdit() {
+    alert("Save edit clicked");
+  }
+
+  function closeModal() {
+    document.getElementById('editModal').style.display = 'none';
+    document.getElementById('deleteModal').style.display = 'none';
+  }
+
+  function confirmDelete() {
+    alert("Delete confirmed");
+  }
+</script>
+
+</body>
+</html>

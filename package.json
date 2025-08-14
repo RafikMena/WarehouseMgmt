@@ -1,0 +1,24 @@
+{
+  "name": "warehousemgmt",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "bwip-js": "^2.0.9",
+    "dotenv": "^17.2.0",
+    "electron": "^35.1.2",
+    "lodash": "^4.17.21",
+    "lowdb": "^3.0.0",
+    "mongodb": "^6.17.0",
+    "mongoose": "^8.16.4",
+    "nanoid": "^5.1.5",
+    "xlsx": "^0.18.5"
+  }
+}

@@ -1,0 +1,233 @@
+<div class="add-inventory-container">
+  <div class="form-header">
+    <div class="header-icon">➕</div>
+    <h2>Add to Inventory</h2>
+  </div>
+
+  <div class="form-content">
+    <div class="input-group">
+      <div class="input-icon">🏷️</div>
+      <div class="input-field">
+        <label for="itemCode">Item Code</label>
+        <input type="text" id="itemCode" placeholder="e.g. FABR123" />
+      </div>
+    </div>
+    
+    <div class="input-group">
+      <div class="input-icon">🧵</div>
+      <div class="input-field">
+        <label for="packing">Packing No. (Rolls)</label>
+        <input type="number" id="packing" placeholder="e.g. 5" />
+      </div>
+    </div>
+    
+    <div class="input-group">
+      <div class="input-icon">📏</div>
+      <div class="input-field">
+        <label for="yards">Total Yards (QTY)</label>
+        <input type="number" id="yards" placeholder="e.g. 200" />
+      </div>
+    </div>
+    
+    <div class="action-area">
+      <button id="addBtn" class="add-button">Add Item</button>
+    </div>
+  </div>
+  
+  <div id="result" class="result-area"></div>
+</div>
+
+<style>
+  :root {
+    --primary: #7e91e4;
+    --primary-gradient:linear-gradient(90deg, #1e90ff, #4facfe);
+    --primary-light: #4cc9f0;
+    --accent: #f72585;
+    --accent-light: #ffccd5;
+    --bg-light: #f8f9fa;
+    --card-bg: #ffffff;
+    --text-dark: #2b2d42;
+    --text-medium: #5c5e70;
+    --text-light: #8d99ae;
+    --border-light: #e9ecef;
+    --success: #52b788;
+    --error: #e63946;
+    --radius-lg: 16px;
+    --radius-md: 12px;
+    --radius-sm: 8px;
+    --shadow-soft: 0 10px 30px rgba(0,0,0,0.05);
+    --shadow-hover: 0 15px 35px rgba(67, 97, 238, 0.1);
+    --animation-speed: 0.2s;
+  }
+
+  .add-inventory-container {
+    max-width: 520px;
+    margin: 0 auto;
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .form-header {
+    background: var(--primary-gradient);
+    padding: 24px;
+    text-align: center;
+    position: relative;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .header-icon {
+    background: rgba(255, 255, 255, 0.2);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    margin-bottom: 12px;
+    backdrop-filter: blur(5px);
+  }
+
+  .form-header h2 {
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -0.5px;
+  }
+
+  .form-content {
+    padding: 32px 30px;
+  }
+
+  .input-group {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 24px;
+    position: relative;
+  }
+
+  .input-icon {
+    background: var(--bg-light);
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin-right: 14px;
+    margin-top: 26px;
+    color: var(--primary);
+  }
+
+  .input-field {
+    flex-grow: 1;
+  }
+
+  label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--text-medium);
+  }
+
+  input {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 15px;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    background: var(--bg-light);
+    color: var(--text-dark);
+    transition: all var(--animation-speed) ease;
+    box-sizing: border-box;
+  }
+
+  input:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+    background: white;
+  }
+
+  input::placeholder {
+    color: var(--text-light);
+  }
+
+  .action-area {
+    display: flex;
+    justify-content: center;
+    margin-top: 32px;
+  }
+
+  .add-button {
+    background: var(--primary-gradient);
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    min-width: 180px;
+    position: relative;
+    overflow: hidden;
+    transition: all var(--animation-speed) ease;
+    box-shadow: 0 4px 12px rgba(67, 97, 238, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .add-button::before {
+    content: "➕ ";
+    margin-right: 8px;
+    font-size: 16px;
+  }
+
+  .add-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(67, 97, 238, 0.3);
+  }
+
+  .add-button:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 8px rgba(67, 97, 238, 0.2);
+  }
+
+  .result-area {
+    padding: 0 30px 30px;
+    font-size: 14px;
+    text-align: center;
+    min-height: 20px;
+  }
+
+  /* Optional animation enhancements */
+  @keyframes slideDown {
+    from { transform: translateY(-10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .input-group {
+    animation: slideDown var(--animation-speed) ease forwards;
+    opacity: 0;
+  }
+
+  .input-group:nth-child(1) { animation-delay: 0.05s; }
+  .input-group:nth-child(2) { animation-delay: 0.1s; }
+  .input-group:nth-child(3) { animation-delay: 0.15s; }
+  
+  .action-area {
+    animation: slideDown var(--animation-speed) ease forwards;
+    animation-delay: 0.2s;
+    opacity: 0;
+  }
+</style>

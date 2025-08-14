@@ -1,0 +1,11 @@
+{
+  "customers": [
+    {
+      "name": "Rafik",
+      "address": "23729",
+      "shipTos": [
+        "2p3293"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Warehouse Manager</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      position: relative; /* 🔑 add this */
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(90deg, #1e90ff, #4facfe);
+      padding: 0 20px;
+      height: 50px;
+      color: white;
+      -webkit-app-region: drag;
+      position: relative;
+      z-index: 10;
+    }
+
+    .topbar h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 12px;
+      padding-right: 320px; /* space for window buttons */
+    }
+
+    .tab {
+      font-size: 14px;
+      padding: 6px 14px;
+      border-radius: 6px;
+      background-color: rgba(255, 255, 255, 0.15);
+      cursor: pointer;
+      -webkit-app-region: no-drag;
+      transition: 0.2s;
+    }
+
+    .tab:hover {
+      background-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .tab.active {
+      background-color: white;
+      color: #1e90ff;
+      font-weight: bold;
+    }
+
+    .window-controls {
+      display: flex;
+      gap: 5px;
+      height: 30px; /* match topbar height */
+      position: absolute; /* instead of fixed */
+      right: 10px;
+      top: 8px;
+      -webkit-app-region: no-drag;
+    }
+
+    .window-controls button {
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 14px;
+      padding: 4px 8px;
+      cursor: pointer;
+    }
+
+    .window-controls button:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+    }
+
+    .main-wrapper {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+    }
+
+    #mainView {
+      background: white;
+      padding: 32px;
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+      min-height: 300px;
+      transition: all 0.2s ease;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <h2><img src="assets/logo.png" height= "50px" width = "50px" ></h2>
+
+    <div class="tabs">
+      <div class="tab active" onclick="navigate('inventory')">Inventory</div>
+      <div class="tab" onclick="navigate('add')">Add Items</div>
+      <div class="tab" onclick="navigate('lookup')">Customer Lookup</div>
+      <div class="tab" onclick="navigate('manage')">Manage Customers</div>
+      <div class="tab" onclick="navigate('packing')">Packing Slips</div>
+      <div class="tab" onclick="navigate('barcode')">Barcodes</div>
+    </div>
+
+    <div class="window-controls">
+      <button id="minBtn">–</button>
+      <button id="maxBtn">🗖</button>
+      <button id="closeBtn">×</button>
+    </div>
+  </div>
+
+  <div class="main-wrapper">
+    <div id="mainView">Loading...</div>
+  </div>
+
+  <script type="module" src="./frontend.js"></script>
+</body>
+</html>

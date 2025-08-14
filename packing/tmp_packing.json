@@ -1,0 +1,67 @@
+{
+  "customer": "Tona",
+  "invoice": "2",
+  "billTo": "undefined",
+  "shipTo": "2192 Evergreen Dr",
+  "po": "1",
+  "shipDate": "0001-01-01",
+  "date": "0001-01-01",
+  "items": [
+    {
+      "item": "aye",
+      "desc": [
+        "Roll #10",
+        "Roll #19"
+      ],
+      "pkg": [
+        1,
+        1
+      ],
+      "qty": [
+        20,
+        28
+      ]
+    },
+    {
+      "item": "xyz",
+      "desc": [
+        "Roll #2"
+      ],
+      "pkg": [
+        1
+      ],
+      "qty": [
+        17.7
+      ]
+    }
+  ],
+  "groupedItems": [
+    {
+      "item": "aye",
+      "desc": [
+        "Roll #10",
+        "Roll #19"
+      ],
+      "pkg": [
+        1,
+        1
+      ],
+      "qty": [
+        20,
+        28
+      ]
+    },
+    {
+      "item": "xyz",
+      "desc": [
+        "Roll #2"
+      ],
+      "pkg": [
+        1
+      ],
+      "qty": [
+        17.7
+      ]
+    }
+  ]
+}

@@ -1,0 +1,95 @@
+<div class="section-header">
+  <h2>👥 Customer List</h2>
+</div>
+
+<div style="max-width: 700px; margin: 0 auto;">
+  <label>Customer Name</label>
+  <input type="text" id="newCustomer" placeholder="e.g. Acme Corp" />
+
+  <label>Bill To Address</label>
+  <textarea id="newAddress" rows="3" placeholder="Street, City, Zip"></textarea>
+
+  <label>Ship To Addresses (one per line)</label>
+  <textarea id="newShipTos" rows="4" placeholder="Line 1&#10;Line 2"></textarea>
+
+  <button id="addCustomerBtn">Add Customer</button>
+
+  <div id="addStatus" style="margin: 20px 0; font-weight: 500;"></div>
+
+  <label>🔍 Search Customers</label>
+  <input type="text" id="searchCustomer" placeholder="Start typing to search..." />
+
+  <div id="searchResults" style="margin-top: 30px;"></div>
+</div>
+
+<style>
+  input, textarea, select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
+  }
+
+  label {
+    font-weight: 600;
+    color: #333;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  button {
+    padding: 10px 16px;
+    font-size: 14px;
+    background-color: #1e90ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  button:hover {
+    background-color: #157dd4;
+  }
+
+  .entry {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr auto;
+    gap: 20px;
+    align-items: center;
+    background: #fff;
+    padding: 16px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+  }
+
+  .entry .shiptos {
+    grid-column: 1 / -1;
+    margin-top: 10px;
+  }
+
+  .entry-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: nowrap;
+  }
+
+  .entry-buttons button {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .entry-buttons .delete-btn {
+    background-color: #dc3545;
+  }
+
+  .entry-buttons .delete-btn:hover {
+    background-color: #b32c2c;
+  }
+</style>

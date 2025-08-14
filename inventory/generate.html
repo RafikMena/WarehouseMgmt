@@ -1,0 +1,68 @@
+<div class="section-header">
+  <h2>🔖 Generate Barcode Sheet</h2>
+</div>
+
+<div style="max-width: 400px; margin: 0 auto; min-height: 300px;">
+  <label for="itemInput">Item Code</label>
+  <input id="itemInput" placeholder="e.g. VNYL123" />
+
+  <label for="yardsInput">Yards</label>
+  <input id="yardsInput" type="number" placeholder="e.g. 50" />
+
+  <label for="rollInput">Roll Number (optional)</label>
+  <input id="rollInput" type="number" placeholder="Leave blank for auto" />
+
+  <!-- Buttons are inserted by JS -->
+  <button id="genBtn" style="margin-top: 10px;">🖨️ Generate Sheet</button>
+  <div id="status"></div>
+</div>
+
+<style>
+  input {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    margin-top: 5px;
+    margin-bottom: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+  }
+
+  button {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    background-color: #1e90ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  button:hover {
+    background-color: #187bcd;
+  }
+
+  label {
+    font-weight: 600;
+    color: #333;
+  }
+
+  .section-header {
+    margin-bottom: 30px;
+  }
+
+  #status {
+    margin-top: 20px;
+    text-align: center;
+    font-weight: 500;
+  }
+
+  ul#barcodeList li {
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-family: monospace;
+  }
+</style>
