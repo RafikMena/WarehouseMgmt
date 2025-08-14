@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <title>Inventory List</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<link rel="stylesheet"> 
 <style>
   body {
     font-family: Tahoma, sans-serif;
@@ -146,9 +147,9 @@
 <div class="window">
   <div class="window-header">
     <span>Inventory List</span>
-<div class="header-actions">
-  <button id="exportBtn">Export</button>
-</div>
+    <div class="header-actions">
+      <button id="exportBtn">Export</button>
+    </div>
   </div>  
 
   <div class="search-bar">
@@ -200,41 +201,9 @@
   </div>
 </div>
 
+<script src="view.js"></script>
 <script>
-  const tbody = document.getElementById('inventoryBody');
-  for (const item of items) {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${item.code}</td>
-      <td>${item.packing}</td>
-      <td>${item.yards}</td>
-      <td>
-        <button style="font-size:11px;padding:2px 6px;">✏️</button>
-        <button style="font-size:11px;padding:2px 6px;">🗑️</button>
-      </td>
-    `;
-    tbody.appendChild(row);
-  }
-
-  document.getElementById("exportBtn").addEventListener("click", exportToExcel);
-  function exportToExcel() {
-    const table = document.getElementById("inventoryTable");
-    const wb = XLSX.utils.table_to_book(table, { sheet: "Inventory" });
-    XLSX.writeFile(wb, "Inventory_List.xlsx");
-  }
-
-  function saveEdit() {
-    alert("Save edit clicked");
-  }
-
-  function closeModal() {
-    document.getElementById('editModal').style.display = 'none';
-    document.getElementById('deleteModal').style.display = 'none';
-  }
-
-  function confirmDelete() {
-    alert("Delete confirmed");
-  }
+  window.moduleInit();
 </script>
 
 </body>
