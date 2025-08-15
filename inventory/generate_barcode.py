@@ -35,7 +35,7 @@ def generate_sheet(entries, output_path):
         x_center = col_width * col + col_width / 2
         y = page_height - (row * row_height + row_height / 2 + barcode_height / 2)
 
-        encoded = f"I:{item},R:{roll},Y:{yards}"
+        encoded = f"{item},{roll},{yards}"
         barcode = createBarcodeDrawing('Code128', value=encoded, barHeight=barcode_height, humanReadable=True)
         barcode_width = barcode.width
 
