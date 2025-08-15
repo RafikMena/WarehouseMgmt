@@ -1,66 +1,36 @@
 {
-  "customer": "Tona",
+  "customer": "Rafik",
   "invoice": "2",
-  "billTo": "undefined",
-  "shipTo": "2192 Evergreen Dr",
-  "po": "1",
-  "shipDate": "0001-01-01",
-  "date": "0001-01-01",
+  "billTo": "8244 E Hillsdale Dr",
+  "shipTo": "8244 E Hillsdale Dr",
+  "po": "2",
+  "shipDate": "2025-08-14",
+  "date": "2025-08-14",
   "items": [
-    {
-      "item": "aye",
-      "desc": [
-        "Roll #10",
-        "Roll #19"
-      ],
-      "pkg": [
-        1,
-        1
-      ],
-      "qty": [
-        20,
-        28
-      ]
-    },
     {
       "item": "xyz",
       "desc": [
-        "Roll #2"
+        "Roll #4"
       ],
       "pkg": [
         1
       ],
       "qty": [
-        17.7
+        20
       ]
     }
   ],
   "groupedItems": [
     {
-      "item": "aye",
-      "desc": [
-        "Roll #10",
-        "Roll #19"
-      ],
-      "pkg": [
-        1,
-        1
-      ],
-      "qty": [
-        20,
-        28
-      ]
-    },
-    {
       "item": "xyz",
       "desc": [
-        "Roll #2"
+        "Roll #4"
       ],
       "pkg": [
         1
       ],
       "qty": [
-        17.7
+        20
       ]
     }
   ]

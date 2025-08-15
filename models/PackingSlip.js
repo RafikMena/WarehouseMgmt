@@ -3,7 +3,10 @@ const mongoose = require('mongoose');
 const PackingSlipSchema = new mongoose.Schema({
   id: String,
   customer: String,
+  billTo: String,        // ✅ Added
   shipTo: String,
+  po: String,            // ✅ Added
+  shipDate: String,      // ✅ Added
   date: String,
   invoice: String,
   items: [Object],

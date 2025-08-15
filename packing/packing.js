@@ -274,6 +274,7 @@ window.moduleInit = async () => {
   document.getElementById('saveNewSlipBtn').onclick = async () => {
     await saveSlip();
     await loadSlipList();
+    document.getElementById('slipSearch').value = '';
     clearSlipForm(); 
   };
 
@@ -284,27 +285,42 @@ window.moduleInit = async () => {
     }, 100);
   }
   
-  document.getElementById('deleteSlipBtn').onclick = async () => {
-    if (!currentSlipId) {
-      const status = document.getElementById('status');
-      status.style.color = 'red';
-      status.textContent = '⚠️ No slip selected to delete.';
-      restoreFocusAfterPrompt('barcodeInput');
-      return;
-    }
-  
-    const confirmed = await showConfirm(`Are you sure you want to delete slip #${currentSlipId}?`);
-    if (!confirmed) return;
-  
-    await window.packingAPI.deleteSlip(currentSlipId);
-    await loadSlipList();
-    clearSlipForm();
-  
-    document.getElementById('slipSearch').value = ''; 
-    currentSlipId = null;
-  
+document.getElementById('deleteSlipBtn').onclick = async () => {
+  if (!currentSlipId) {
+    const status = document.getElementById('status');
+    status.style.color = 'red';
+    status.textContent = '⚠️ No slip selected to delete.';
     restoreFocusAfterPrompt('barcodeInput');
-  };
+    return;
+  }
+
+  const confirmed = await showConfirm(
+    `Are you sure you want to delete slip #${currentSlipId}? This will return all rolls to inventory.`
+  );
+  if (!confirmed) return;
+
+  // 1️⃣ Load the slip so we know what to return
+  const slips = await window.packingAPI.getAllSlips();
+  const slip = slips.find(s => s.id === currentSlipId);
+  if (!slip) return;
+
+  // 2️⃣ Return each roll to inventory
+  for (const item of slip.items || []) {
+    await window.api.addRoll({ itemCode: item.itemCode, packing: 1, yards: item.qty });
+  }
+
+  // 3️⃣ Delete the slip
+  await window.packingAPI.deleteSlip(currentSlipId);
+
+  // 4️⃣ Refresh UI
+  await loadSlipList();
+  clearSlipForm();
+  document.getElementById('slipSearch').value = ''; // ✅ clear search bar
+  currentSlipId = null;
+
+  restoreFocusAfterPrompt('barcodeInput');
+};
+
   
   
 
@@ -370,9 +386,16 @@ async function clearSlipForm() {
   document.getElementById('shipDate').value = '';
   document.getElementById('invoiceDate').value = '';
   scannedItems = [];
+  currentSlipVoided = false; // ✅ reset void status
+  document.getElementById('voidBanner').style.display = 'none'; // ✅ hide banner
+  document.getElementById('barcodeInput').disabled = false; // ✅ re-enable scanning
+  document.getElementById('generateSlipBtn').disabled = false;
+  document.getElementById('saveSlipBtn').disabled = false;
   renderTable();
   isDirty = false;
 }
+
+
 
 async function loadSlip(id) {
   const slips = await window.packingAPI.getAllSlips();
@@ -446,9 +469,12 @@ window.voidSlip = async function () {
   const slips = await window.packingAPI.getAllSlips();
   const slip = slips.find(s => s.id === currentSlipId);
   if (!slip) return;
+
   slip.void = true;
+  delete slip._id; // 🚀 prevents ObjectId casting issue
   await window.packingAPI.saveSlip(slip);
 
   await loadSlip(currentSlipId);
-  document.getElementById('status').innerHTML = '<span style="color:red; font-size:18px; font-weight:bold;">❌ This slip has been voided</span>';
+  document.getElementById('voidBanner').style.display = 'block';
 };
+

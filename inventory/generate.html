@@ -1,68 +1,87 @@
-<div class="section-header">
-  <h2>🔖 Generate Barcode Sheet</h2>
-</div>
+<div class="barcode-wrapper">
+  <div class="section-header">
+    <h2>🔖 Generate Barcode Sheet</h2>
+  </div>
 
-<div style="max-width: 400px; margin: 0 auto; min-height: 300px;">
-  <label for="itemInput">Item Code</label>
-  <input id="itemInput" placeholder="e.g. VNYL123" />
+  <div class="barcode-container">
+    <label for="itemInput">Item Code</label>
+    <input id="itemInput" placeholder="e.g. VNYL123" />
 
-  <label for="yardsInput">Yards</label>
-  <input id="yardsInput" type="number" placeholder="e.g. 50" />
+    <label for="yardsInput">Yards</label>
+    <input id="yardsInput" type="number" placeholder="e.g. 50" />
 
-  <label for="rollInput">Roll Number (optional)</label>
-  <input id="rollInput" type="number" placeholder="Leave blank for auto" />
+    <label for="rollInput">Roll Number (optional)</label>
+    <input id="rollInput" type="number" placeholder="Leave blank for auto" />
 
-  <!-- Buttons are inserted by JS -->
-  <button id="genBtn" style="margin-top: 10px;">🖨️ Generate Sheet</button>
-  <div id="status"></div>
+    <button id="genBtn">🖨️ Generate Sheet</button>
+    <div id="status"></div>
+  </div>
 </div>
 
 <style>
-  input {
+  .barcode-wrapper {
+    max-width: 400px;
+    margin: 30px auto;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+    border: 1px solid #888;
+  }
+
+  .section-header h2 {
+    background: #1f5f2e;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+    margin: 0;
+    font-family: Tahoma, sans-serif;
+    border-bottom: 1px solid #888;
+  }
+
+  .barcode-container {
+    background: #fff;
+    padding: 15px;
+    font-family: Tahoma, sans-serif;
+  }
+
+  .barcode-container label {
+    font-weight: bold;
+    font-size: 13px;
+    display: block;
+    margin-bottom: 4px;
+    color: #000;
+  }
+
+  .barcode-container input {
     width: 100%;
-    padding: 12px;
-    font-size: 16px;
-    margin-top: 5px;
-    margin-bottom: 16px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
+    padding: 6px;
+    font-size: 13px;
+    margin-bottom: 10px;
+    border: 1px solid #999;
     box-sizing: border-box;
+    font-family: Tahoma, sans-serif;
   }
 
-  button {
+  .barcode-container button {
     width: 100%;
-    padding: 14px;
-    font-size: 16px;
-    background-color: #1e90ff;
-    color: white;
-    border: none;
-    border-radius: 8px;
+    padding: 8px;
+    font-size: 13px;
+    font-weight: bold;
+    background: linear-gradient(#f0f0f0, #dcdcdc);
+    border: 1px solid #888;
     cursor: pointer;
-    transition: background 0.2s ease;
+    color: #000;
+    font-family: Tahoma, sans-serif;
   }
 
-  button:hover {
-    background-color: #187bcd;
-  }
-
-  label {
-    font-weight: 600;
-    color: #333;
-  }
-
-  .section-header {
-    margin-bottom: 30px;
+  .barcode-container button:hover {
+    background: linear-gradient(#e6e6e6, #c8c8c8);
   }
 
   #status {
-    margin-top: 20px;
+    margin-top: 12px;
     text-align: center;
-    font-weight: 500;
-  }
-
-  ul#barcodeList li {
-    margin-bottom: 6px;
-    font-size: 14px;
-    font-family: monospace;
+    font-weight: bold;
+    font-size: 13px;
+    color: red;
   }
 </style>
